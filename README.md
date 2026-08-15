@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Deskly
 
-## Getting Started
+Mesa de ayuda para negocios pequeños: tus clientes abren tickets de soporte sin crear cuenta, tú los atiendes desde un panel.
 
-First, run the development server:
+## Qué hace
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Cuenta de negocio** con registro/login (contraseña con bcrypt, sesión firmada con JWT en cookie httpOnly).
+- **Página pública de soporte** en `tudominio.com/tu-negocio`: el cliente abre un ticket (asunto, descripción, nombre, correo) sin necesidad de cuenta, y recibe un código corto para darle seguimiento.
+- **Seguimiento sin cuenta**: el cliente vuelve a `tudominio.com/tu-negocio/ticket/CODIGO`, confirma su correo, y ve el hilo completo — incluida la respuesta del negocio — y puede responder de vuelta.
+- **Panel del negocio**: bandeja de tickets con filtro por estado (abiertos/en progreso/cerrados), prioridad, hilo de mensajes por ticket, y control de estado/prioridad.
+- Un ticket cerrado deja de aceptar respuestas del cliente, tanto en la interfaz como validado en el servidor.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Por qué es real, no una demo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Igual que Slotwise, este es un producto que necesita backend genuino: un ticket abierto por un cliente debe ser visible para el negocio desde otro dispositivo, y la respuesta del negocio debe llegarle al cliente en su propia sesión — algo que `localStorage` no puede resolver. Usa la misma base **Neon (Postgres serverless)** vía Vercel, con:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Contraseñas con **bcrypt**, sesiones con **JWT firmado** (`jose`), cookie httpOnly/secure.
+- El acceso del cliente a su propio ticket se verifica en el servidor comparando el correo contra el que quedó registrado al crear el ticket — no es solo una URL "secreta", cada lectura y cada mensaje nuevo del cliente revalida el correo.
+- El código de ticket se genera con `crypto.randomBytes`, evitando caracteres ambiguos (0/O, 1/I/L) para que sea fácil de transcribir.
 
-## Learn More
+Verificado con un flujo completo automatizado contra la base de datos de producción: crear cuenta → cliente abre ticket → aparece en el panel → filtros de estado funcionan → el negocio responde → el cliente ve la respuesta y contesta → el negocio ve esa respuesta → cerrar el ticket bloquea nuevas respuestas → un correo incorrecto no revela el contenido del ticket.
 
-To learn more about Next.js, take a look at the following resources:
+## Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Next.js 16 (App Router, Route Handlers), TypeScript, Tailwind CSS 4, React 19, Neon Postgres (`@neondatabase/serverless`), `bcryptjs`, `jose`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estructura
 
-## Deploy on Vercel
+- `lib/schema.sql` — tablas: cuentas, tickets, mensajes.
+- `lib/jwt.ts` / `lib/auth.ts` / `lib/session.ts` — sesión (JWT) y contraseñas (bcrypt), separados para que `proxy.ts` (Edge runtime) no cargue bcrypt.
+- `lib/ticketCode.ts` — generación del código corto de ticket.
+- `proxy.ts` — protege `/dashboard/**`.
+- `app/api/**` — endpoints privados (tickets, mensajes) y públicos (`/api/public/[slug]/**`).
+- `app/[slug]/page.tsx` + `components/PublicSupportView.tsx` — página pública (nuevo ticket / ver ticket existente).
+- `app/[slug]/ticket/[code]/page.tsx` + `components/TicketPublicView.tsx` — vista del ticket para el cliente.
+- `app/dashboard/**` — panel del negocio.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Estado
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Completo y funcional. Verificado con build, lint, y un flujo end-to-end completo contra la base de datos Neon real, incluyendo el hilo de mensajes bidireccional y el bloqueo de tickets cerrados.
+
+## Pendientes
+
+Ninguno bloqueante. Posibles mejoras futuras: notificaciones por correo cuando hay una respuesta nueva, múltiples miembros de staff por cuenta, adjuntar archivos.
