@@ -36,45 +36,45 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
+    <div className="flex min-h-screen items-center justify-center bg-paper px-6">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex justify-center">
           <Logo />
         </div>
-        <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-6">
-          <h1 className="mb-4 text-lg font-semibold text-slate-900">Inicia sesión</h1>
+        <form onSubmit={handleSubmit} className="rounded-lg border border-line bg-paper-raised p-6">
+          <h1 className="mb-4 font-display text-lg font-semibold text-ink">Inicia sesión</h1>
 
           <label className="mb-3 block">
-            <span className="mb-1 block text-xs font-medium text-slate-600">Correo</span>
+            <span className="mb-1 block text-xs font-medium text-ink-soft">Correo</span>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+              className="w-full rounded-md border border-line px-2.5 py-1.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
             />
           </label>
 
           <label className="mb-4 block">
-            <span className="mb-1 block text-xs font-medium text-slate-600">Contraseña</span>
+            <span className="mb-1 block text-xs font-medium text-ink-soft">Contraseña</span>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+              className="w-full rounded-md border border-line px-2.5 py-1.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
             />
           </label>
 
-          {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+          {error && <p className="mb-3 text-sm text-accent-dark">{error}</p>}
 
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Entrando…" : "Entrar"}
           </Button>
 
-          <p className="mt-4 text-center text-sm text-slate-500">
+          <p className="mt-4 text-center text-sm text-ink-soft">
             ¿No tienes cuenta?{" "}
-            <Link href="/signup" className="font-medium text-slate-900 underline">
+            <Link href="/signup" className="font-medium text-brand hover:text-brand-dark underline underline-offset-2">
               Créala aquí
             </Link>
           </p>

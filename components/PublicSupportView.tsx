@@ -24,31 +24,31 @@ export function PublicSupportView({ slug }: { slug: string }) {
 
   if (notFound) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 text-center">
-        <p className="text-sm text-slate-500">No encontramos esta página de soporte.</p>
+      <div className="flex min-h-screen items-center justify-center bg-paper px-6 text-center">
+        <p className="text-sm text-ink-soft">No encontramos esta página de soporte.</p>
       </div>
     );
   }
 
   if (businessName === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <Loader2 size={20} className="animate-spin text-slate-400" />
+      <div className="flex min-h-screen items-center justify-center bg-paper">
+        <Loader2 size={20} className="animate-spin text-brand" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-10">
+    <div className="min-h-screen bg-paper px-6 py-10">
       <div className="mx-auto max-w-md">
-        <h1 className="text-center text-xl font-semibold tracking-tight text-slate-900">{businessName}</h1>
-        <p className="mb-6 text-center text-sm text-slate-500">¿En qué te podemos ayudar?</p>
+        <h1 className="text-center font-display text-xl font-semibold tracking-tight text-ink">{businessName}</h1>
+        <p className="mb-6 text-center text-sm text-ink-soft">¿En qué te podemos ayudar?</p>
 
-        <div className="mb-4 flex gap-1 rounded-md bg-slate-100 p-1">
+        <div className="mb-4 flex gap-1 rounded-md bg-line/40 p-1">
           <button
             onClick={() => setTab("new")}
             className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-              tab === "new" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+              tab === "new" ? "bg-paper-raised text-ink shadow-sm" : "text-ink-soft hover:text-ink"
             }`}
           >
             Nuevo ticket
@@ -56,7 +56,7 @@ export function PublicSupportView({ slug }: { slug: string }) {
           <button
             onClick={() => setTab("lookup")}
             className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-              tab === "lookup" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+              tab === "lookup" ? "bg-paper-raised text-ink shadow-sm" : "text-ink-soft hover:text-ink"
             }`}
           >
             Ver mi ticket

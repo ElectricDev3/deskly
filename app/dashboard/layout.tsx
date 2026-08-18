@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!account) redirect("/login");
 
   return (
-    <div className="min-h-screen bg-slate-50 lg:flex">
+    <div className="min-h-screen bg-paper lg:flex">
       <DashboardNav businessName={account.business_name} slug={account.slug} />
       <main className="flex-1 px-6 py-8 lg:px-10">
         <div className="mx-auto max-w-3xl">{children}</div>

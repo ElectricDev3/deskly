@@ -11,11 +11,11 @@ export function MessageThread({ messages }: { messages: TicketMessage[] }) {
         <div
           key={m.id}
           className={`max-w-[85%] rounded-lg p-3 text-sm ${
-            m.author_type === "staff" ? "ml-auto bg-slate-900 text-white" : "bg-slate-100 text-slate-800"
+            m.author_type === "staff" ? "ml-auto bg-brand text-white" : "bg-line/50 text-ink"
           }`}
         >
           <p className="whitespace-pre-wrap">{m.body}</p>
-          <p className={`mt-1.5 text-xs ${m.author_type === "staff" ? "text-slate-300" : "text-slate-400"}`}>
+          <p className={`mt-1.5 text-xs ${m.author_type === "staff" ? "text-white/70" : "text-ink-faint"}`}>
             {m.author_type === "staff" ? "Tú" : "Cliente"} · {formatDate(m.created_at)}
           </p>
         </div>

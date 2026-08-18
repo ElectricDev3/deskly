@@ -20,10 +20,10 @@ export function DashboardNav({ businessName, slug }: { businessName: string; slu
   }
 
   return (
-    <aside className="border-b border-slate-200 bg-white px-6 py-4 lg:w-56 lg:shrink-0 lg:border-b-0 lg:border-r lg:px-4 lg:py-6">
+    <aside className="border-b border-line bg-paper-raised px-6 py-4 lg:w-56 lg:shrink-0 lg:border-b-0 lg:border-r lg:px-4 lg:py-6">
       <div className="mb-6 leading-tight">
-        <p className="text-sm font-semibold text-slate-900">{businessName}</p>
-        <p className="text-xs text-slate-400">/{slug}</p>
+        <p className="font-display text-sm font-semibold text-ink">{businessName}</p>
+        <p className="font-mono text-xs text-ink-faint">/{slug}</p>
       </div>
 
       <nav className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
@@ -34,7 +34,7 @@ export function DashboardNav({ businessName, slug }: { businessName: string; slu
               key={item.href}
               href={item.href}
               className={`flex shrink-0 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                active ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
+                active ? "bg-brand text-white" : "text-ink-soft hover:bg-brand-light hover:text-brand-dark"
               }`}
             >
               <item.icon size={15} />
@@ -46,7 +46,7 @@ export function DashboardNav({ businessName, slug }: { businessName: string; slu
 
       <button
         onClick={handleLogout}
-        className="mt-6 flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100"
+        className="mt-6 flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-ink-faint hover:bg-brand-light hover:text-brand-dark"
       >
         <LogOut size={15} />
         Cerrar sesión

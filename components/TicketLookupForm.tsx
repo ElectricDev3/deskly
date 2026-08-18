@@ -15,25 +15,25 @@ export function TicketLookupForm({ slug }: { slug: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-5">
+    <form onSubmit={handleSubmit} className="rounded-lg border border-line bg-paper-raised p-5">
       <label className="mb-3 block">
-        <span className="mb-1 block text-xs font-medium text-slate-600">Código de ticket</span>
+        <span className="mb-1 block text-xs font-medium text-ink-soft">Código de ticket</span>
         <input
           required
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="Ej. K7M3PQR"
-          className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 font-mono text-sm uppercase tracking-widest text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          className="w-full rounded-md border border-line px-2.5 py-1.5 font-mono text-sm uppercase tracking-widest text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
         />
       </label>
       <label className="mb-4 block">
-        <span className="mb-1 block text-xs font-medium text-slate-600">Tu correo</span>
+        <span className="mb-1 block text-xs font-medium text-ink-soft">Tu correo</span>
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          className="w-full rounded-md border border-line px-2.5 py-1.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
         />
       </label>
       <Button type="submit" className="w-full">

@@ -7,14 +7,15 @@ const STATUS_LABELS: Record<TicketStatus, string> = {
 };
 
 const STATUS_CLASSES: Record<TicketStatus, string> = {
-  open: "bg-sky-50 text-sky-700",
+  open: "bg-brand-light text-brand-dark",
   in_progress: "bg-amber-50 text-amber-700",
-  closed: "bg-slate-100 text-slate-500",
+  closed: "bg-line/60 text-ink-faint",
 };
 
 export function StatusBadge({ status }: { status: TicketStatus }) {
   return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLASSES[status]}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLASSES[status]}`}>
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {STATUS_LABELS[status]}
     </span>
   );
@@ -27,9 +28,9 @@ const PRIORITY_LABELS: Record<TicketPriority, string> = {
 };
 
 const PRIORITY_CLASSES: Record<TicketPriority, string> = {
-  low: "text-slate-400",
-  normal: "text-slate-600",
-  high: "text-red-600 font-medium",
+  low: "text-ink-faint",
+  normal: "text-ink-soft",
+  high: "text-accent-dark font-medium",
 };
 
 export function PriorityLabel({ priority }: { priority: TicketPriority }) {

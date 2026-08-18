@@ -38,17 +38,17 @@ export function TicketsView() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">Tickets</h1>
-        <p className="text-sm text-slate-500">Las consultas de tus clientes, en un solo lugar.</p>
+        <h1 className="font-display text-xl font-semibold tracking-tight text-ink">Tickets</h1>
+        <p className="text-sm text-ink-soft">Las consultas de tus clientes, en un solo lugar.</p>
       </div>
 
-      <div className="mb-4 flex gap-1 rounded-md bg-slate-100 p-1 w-fit">
+      <div className="mb-4 flex gap-1 rounded-md bg-line/40 p-1 w-fit">
         {FILTERS.map((f) => (
           <button
             key={f.value}
             onClick={() => setFilter(f.value)}
             className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-              filter === f.value ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+              filter === f.value ? "bg-paper-raised text-ink shadow-sm" : "text-ink-soft hover:text-ink"
             }`}
           >
             {f.label}
@@ -57,9 +57,9 @@ export function TicketsView() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-slate-400">Cargando…</p>
+        <p className="text-sm text-ink-faint">Cargando…</p>
       ) : tickets.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">
+        <div className="rounded-lg border border-dashed border-line bg-paper-raised p-8 text-center text-sm text-ink-soft">
           No hay tickets aquí todavía.
         </div>
       ) : (
@@ -68,11 +68,11 @@ export function TicketsView() {
             <Link
               key={t.id}
               href={`/dashboard/tickets/${t.id}`}
-              className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-4 hover:border-slate-300"
+              className="flex items-center justify-between gap-3 rounded-lg border border-line bg-paper-raised p-4 transition-colors hover:border-brand/40"
             >
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-slate-900">{t.subject}</p>
-                <p className="mt-0.5 text-xs text-slate-500">
+                <p className="truncate text-sm font-medium text-ink">{t.subject}</p>
+                <p className="mt-0.5 font-mono text-xs text-ink-soft">
                   {t.requester_name} · #{t.code}
                 </p>
               </div>

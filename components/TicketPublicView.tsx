@@ -22,6 +22,7 @@ export function TicketPublicView({ slug, code, initialEmail }: TicketPublicViewP
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
+  const [replyError, setReplyError] = useState<string | null>(null);
 
   async function lookup(targetEmail: string) {
     if (!targetEmail) return;
@@ -59,14 +60,22 @@ export function TicketPublicView({ slug, code, initialEmail }: TicketPublicViewP
     e.preventDefault();
     if (!reply.trim()) return;
     setSending(true);
+    setReplyError(null);
     try {
-      await fetch(`/api/public/${slug}/tickets/${code}/messages`, {
+      const res = await fetch(`/api/public/${slug}/tickets/${code}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, text: reply }),
       });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setReplyError(data?.error ?? "No se pudo enviar tu mensaje. Intenta de nuevo.");
+        return;
+      }
       setReply("");
-      lookup(email);
+      await lookup(email);
+    } catch {
+      setReplyError("No se pudo enviar tu mensaje. Revisa tu conexión e intenta de nuevo.");
     } finally {
       setSending(false);
     }
@@ -74,26 +83,26 @@ export function TicketPublicView({ slug, code, initialEmail }: TicketPublicViewP
 
   if (!ticket) {
     return (
-      <div className="min-h-screen bg-slate-50 px-6 py-10">
+      <div className="min-h-screen bg-paper px-6 py-10">
         <div className="mx-auto max-w-md">
-          <h1 className="mb-1 text-center text-xl font-semibold tracking-tight text-slate-900">
-            Ticket #{code}
+          <h1 className="mb-1 text-center font-display text-xl font-semibold tracking-tight text-ink">
+            Ticket <span className="font-mono">#{code}</span>
           </h1>
-          <p className="mb-6 text-center text-sm text-slate-500">
+          <p className="mb-6 text-center text-sm text-ink-soft">
             Ingresa el correo con el que enviaste este ticket para verlo.
           </p>
-          <form onSubmit={handleUnlock} className="rounded-lg border border-slate-200 bg-white p-5">
+          <form onSubmit={handleUnlock} className="rounded-lg border border-line bg-paper-raised p-5">
             <label className="mb-4 block">
-              <span className="mb-1 block text-xs font-medium text-slate-600">Tu correo</span>
+              <span className="mb-1 block text-xs font-medium text-ink-soft">Tu correo</span>
               <input
                 type="email"
                 required
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-2.5 py-1.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                className="w-full rounded-md border border-line px-2.5 py-1.5 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
               />
             </label>
-            {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+            {error && <p className="mb-3 text-sm text-accent-dark">{error}</p>}
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Buscando…" : "Ver ticket"}
             </Button>
@@ -104,36 +113,37 @@ export function TicketPublicView({ slug, code, initialEmail }: TicketPublicViewP
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-10">
+    <div className="min-h-screen bg-paper px-6 py-10">
       <div className="mx-auto max-w-md">
-        <div className="mb-4 rounded-lg border border-slate-200 bg-white p-5">
+        <div className="mb-4 rounded-lg border border-line bg-paper-raised p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h1 className="text-lg font-semibold text-slate-900">{ticket.subject}</h1>
-              <p className="mt-0.5 text-xs text-slate-500">#{ticket.code}</p>
+              <h1 className="font-display text-lg font-semibold text-ink">{ticket.subject}</h1>
+              <p className="mt-0.5 font-mono text-xs text-ink-soft">#{ticket.code}</p>
             </div>
             <StatusBadge status={ticket.status} />
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-5">
+        <div className="rounded-lg border border-line bg-paper-raised p-5">
           <MessageThread messages={messages} />
 
           {ticket.status !== "closed" ? (
-            <form onSubmit={handleReply} className="mt-4 border-t border-slate-100 pt-4">
+            <form onSubmit={handleReply} className="mt-4 border-t border-line pt-4">
               <textarea
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
                 rows={3}
                 placeholder="Agrega más detalles…"
-                className="w-full resize-none rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                className="w-full resize-none rounded-md border border-line px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
               />
+              {replyError && <p className="mt-2 text-sm text-accent-dark">{replyError}</p>}
               <Button type="submit" disabled={sending || !reply.trim()} className="mt-2">
                 <Send size={14} /> {sending ? "Enviando…" : "Enviar"}
               </Button>
             </form>
           ) : (
-            <p className="mt-4 border-t border-slate-100 pt-4 text-sm text-slate-400">
+            <p className="mt-4 border-t border-line pt-4 text-sm text-ink-faint">
               Este ticket está cerrado.
             </p>
           )}

@@ -24,7 +24,7 @@ export function CopyLinkButton({ slug }: { slug: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <code className="rounded bg-slate-100 px-2.5 py-1.5 text-sm text-slate-800">/{slug}</code>
+      <code className="rounded bg-brand-light px-2.5 py-1.5 font-mono text-sm text-brand-dark">/{slug}</code>
       <Button type="button" variant="secondary" onClick={handleCopy}>
         {copied ? <Check size={14} /> : <Copy size={14} />}
         {copied ? "Copiado" : "Copiar"}

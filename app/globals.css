@@ -1,26 +1,92 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f2f6f5;
+  --paper-raised: #ffffff;
+  --ink: #0e2521;
+  --ink-soft: #4b615c;
+  --ink-faint: #8ca39c;
+  --brand: #0f6e63;
+  --brand-dark: #0a4f47;
+  --brand-light: #e1f0ec;
+  --accent: #ff5a36;
+  --accent-dark: #db4222;
+  --accent-soft: #ffe4da;
+  --line: #dce6e2;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-light: var(--brand-light);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-soft: var(--accent-soft);
+  --color-line: var(--line);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-grotesk);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0b1614;
+    --paper-raised: #122120;
+    --ink: #eaf3f0;
+    --ink-soft: #9fb6af;
+    --ink-faint: #62766f;
+    --brand: #35b39f;
+    --brand-dark: #268573;
+    --brand-light: rgba(53, 179, 159, 0.14);
+    --accent: #ff7a57;
+    --accent-dark: #ff5a36;
+    --accent-soft: rgba(255, 90, 54, 0.16);
+    --line: #22302c;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* Perforated claim-check edge, used sparingly for the ticket-stub motif */
+.ticket-stub {
+  position: relative;
+}
+
+.ticket-stub::before,
+.ticket-stub::after {
+  content: "";
+  position: absolute;
+  top: var(--stub-notch-top, 50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--stub-notch-color, var(--paper));
+  transform: translateY(-50%);
+}
+
+.ticket-stub::before {
+  left: -9px;
+}
+
+.ticket-stub::after {
+  right: -9px;
 }

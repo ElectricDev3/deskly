@@ -24,6 +24,7 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
   const [messages, setMessages] = useState<TicketMessage[]>([]);
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
+  const [replyError, setReplyError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/tickets/${ticketId}`);
@@ -39,11 +40,12 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   async function updateField(patch: { status?: TicketStatus; priority?: TicketPriority }) {
-    await fetch(`/api/tickets/${ticketId}`, {
+    const res = await fetch(`/api/tickets/${ticketId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
+    if (!res.ok) return;
     load();
   }
 
@@ -51,44 +53,52 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
     e.preventDefault();
     if (!reply.trim()) return;
     setSending(true);
+    setReplyError(null);
     try {
-      await fetch(`/api/tickets/${ticketId}/messages`, {
+      const res = await fetch(`/api/tickets/${ticketId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: reply }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setReplyError(data?.error ?? "No se pudo enviar tu respuesta. Intenta de nuevo.");
+        return;
+      }
       setReply("");
-      load();
+      await load();
+    } catch {
+      setReplyError("No se pudo enviar tu respuesta. Revisa tu conexión e intenta de nuevo.");
     } finally {
       setSending(false);
     }
   }
 
-  if (!ticket) return <p className="text-sm text-slate-400">Cargando…</p>;
+  if (!ticket) return <p className="text-sm text-ink-faint">Cargando…</p>;
 
   return (
     <div>
-      <Link href="/dashboard" className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700">
+      <Link href="/dashboard" className="mb-4 inline-flex items-center gap-1.5 text-sm text-ink-soft hover:text-ink">
         <ArrowLeft size={14} /> Volver a tickets
       </Link>
 
-      <div className="mb-4 rounded-lg border border-slate-200 bg-white p-5">
+      <div className="mb-4 rounded-lg border border-line bg-paper-raised p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-lg font-semibold text-slate-900">{ticket.subject}</h1>
-            <p className="mt-0.5 text-sm text-slate-500">
+            <h1 className="font-display text-lg font-semibold text-ink">{ticket.subject}</h1>
+            <p className="mt-0.5 font-mono text-sm text-ink-soft">
               {ticket.requester_name} · {ticket.requester_email} · #{ticket.code}
             </p>
           </div>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
+          <label className="flex items-center gap-2 text-xs font-medium text-ink-soft">
             Estado
             <select
               value={ticket.status}
               onChange={(e) => updateField({ status: e.target.value as TicketStatus })}
-              className="rounded-md border border-slate-300 bg-white px-2 py-1 text-sm text-slate-900 focus:border-slate-500 focus:outline-none"
+              className="rounded-md border border-line bg-paper-raised px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
             >
               {STATUS_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -97,12 +107,12 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
               ))}
             </select>
           </label>
-          <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
+          <label className="flex items-center gap-2 text-xs font-medium text-ink-soft">
             Prioridad
             <select
               value={ticket.priority}
               onChange={(e) => updateField({ priority: e.target.value as TicketPriority })}
-              className="rounded-md border border-slate-300 bg-white px-2 py-1 text-sm text-slate-900 focus:border-slate-500 focus:outline-none"
+              className="rounded-md border border-line bg-paper-raised px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
             >
               {PRIORITY_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -114,17 +124,18 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
         </div>
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-white p-5">
+      <div className="rounded-lg border border-line bg-paper-raised p-5">
         <MessageThread messages={messages} />
 
-        <form onSubmit={handleReply} className="mt-4 border-t border-slate-100 pt-4">
+        <form onSubmit={handleReply} className="mt-4 border-t border-line pt-4">
           <textarea
             value={reply}
             onChange={(e) => setReply(e.target.value)}
             rows={3}
             placeholder="Escribe tu respuesta…"
-            className="w-full resize-none rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+            className="w-full resize-none rounded-md border border-line px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
           />
+          {replyError && <p className="mt-2 text-sm text-accent-dark">{replyError}</p>}
           <Button type="submit" disabled={sending || !reply.trim()} className="mt-2">
             <Send size={14} /> {sending ? "Enviando…" : "Responder"}
           </Button>
